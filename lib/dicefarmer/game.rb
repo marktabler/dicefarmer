@@ -8,9 +8,35 @@ module DiceFarmer
       @game_over = false
       @start_dice = start_dice
       @goal_dice = goal_dice
+      welcome_script
       make_players(player_count)
     end
 
+    def welcome_script
+      puts "\n"
+      puts "Welcome to Dice Farmer!"
+      puts "\n"
+      puts "You start the game with a handful of dice."
+      puts "Each turn, you roll all of your dice."
+      puts "Dice that come up 1 are 'dead', and get discarded."
+      puts "Everything else becomes part of a pool you can make new dice with!"
+      puts "You can use individual dice or group them together; either way, the"
+      puts "results must total 4, 6, 8, 10, 12, or 20. You will get a new die"
+      puts "for your next turn with that many sides."
+      puts "You can make as many dice as you have results for each turn."
+      puts "Dice that don't get used are simply ignored and re-rolled next turn."
+      puts "First person to get a certain number of dice of a certain size wins!"
+      puts "On your turn, you will be asked to pick dice to combine."
+      puts "The game accepts input like this: 1,2,4"
+      puts "That command will add the results of dice 1, 2, and 4, and make"
+      puts "a new die with that many faces."
+      puts "\n"
+      puts "This game will start with these dice:"
+      puts @start_dice.map(&:to_s).join(", ")
+      puts "The winner is the first person to reach these dice:"
+      puts @goal_dice.map(&:to_s).join(", ")
+    end
+    
     def make_players(player_count)
       @players = []
       player_count.times do
@@ -65,7 +91,7 @@ module DiceFarmer
     
     def accept_die_decisions(player)
       display_roll_results(player)
-      puts "Make a new die from which results?"
+      puts "Make a new die from which results? (Enter to end turn)"
       die_selections = gets.chomp
       if die_selections.size >= 1
         parse_decisions(die_selections, player)

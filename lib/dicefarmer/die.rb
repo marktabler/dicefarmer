@@ -22,9 +22,9 @@ module DiceFarmer
     # the back of the line and do not affect the order of the existing
     # list.
     def <=>(other)
-      if other.current_roll == 0
+      if other.current_roll == 0 && current_roll > 0
         -1
-      elsif current_roll == 0
+      elsif current_roll == 0 && other.current_roll > 0
         1
       else
         sides <=> other.sides
