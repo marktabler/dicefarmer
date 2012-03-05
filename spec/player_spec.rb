@@ -39,6 +39,16 @@ describe 'Player' do
       @player.discard_dead_dice
       @player.dice.size.should == 3      
     end
+
+    it "empties the hand if all dice are 1" do
+      @player = DiceFarmer::Player.new("Joe", [4, 4, 4, 6, 6, 6, 12, 12])
+      @player.dice.each do |die|
+        die.current_roll = 1
+      end
+      @player.discard_dead_dice
+      @player.dice.empty?.should be_true
+    end
+    
   end
 
   describe "#busted?" do

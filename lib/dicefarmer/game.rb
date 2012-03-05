@@ -47,19 +47,25 @@ module DiceFarmer
       display_roll_results(player)
       puts "Discarding dead dice."
       player.discard_dead_dice
-      accept_die_decisions(player)
+      accept_die_decisions(player) unless player.busted?
       win_game(player) if player_won?(player)
+      bounce_back(player) if player.busted?
     end
 
+    def bounce_back(player)
+      puts "#{player.name}, you busted! We'll get you back in the game."
+      player.add_dice(start_dice)
+    end
+    
     def display_roll_results(player)
-      player.dice.sort_by {|d| d.sides}.each_with_index do |die, index|
+      player.dice.sort.each_with_index do |die, index|
         puts "#{index + 1}: D#{die.sides} : #{die.current_roll}" unless die.current_roll == 0
       end
     end
     
     def accept_die_decisions(player)
       display_roll_results(player)
-      puts "Which dice would you like to combine?"
+      puts "Make a new die from which results?"
       die_selections = gets.chomp
       if die_selections.size >= 1
         parse_decisions(die_selections, player)
@@ -67,7 +73,8 @@ module DiceFarmer
       end
     end
     
-    
+    # Takes input in the form "1,2,4" or "1, 2, 4", and matches
+    # the selections up to die indexes
     def parse_decisions(die_selections, player)
       indexes = die_selections.split(',').map(&:to_i).compact.uniq
       if indexes.select{|i| i < 1}.any? || indexes.select{|i| i > player.dice.size}.any?
@@ -75,7 +82,7 @@ module DiceFarmer
       else
         selections = []
         indexes.each do |index|
-          selections << player.dice.sort_by {|d| d.sides}[index - 1]
+          selections << player.dice.sort[index - 1]
         end
         puts player.make_new_die(selections)
       end

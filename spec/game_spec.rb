@@ -1,8 +1,13 @@
 require 'dicefarmer'
 
+# TODO:
+# Test win conditions
+# Test decision parsing
+
+
 describe 'Game' do
   before do
-#    $stdout.stub!(:write)
+    $stdout.stub!(:write)
   end
   
   describe 'make_players' do
@@ -18,6 +23,17 @@ describe 'Game' do
     end
   end
 
+  describe 'bounce_back' do
+    it "sets a player back up with original starting dice" do
+      @game = DiceFarmer::Game.new([4, 4, 8], [20], 2)
+      @player = @game.players.first
+      @player.dice = []
+      @game.bounce_back(@player)
+      @player.dice.map(&:sides).sort.should == [4, 4, 8]
+    end
+  end
+  
+  
   describe 'player_won?' do
     it "returns true if the player meets the victory condition (separate denoms)" do
       @game = DiceFarmer::Game.new([2, 4, 8, 12, 20], [4, 8, 20], 2)

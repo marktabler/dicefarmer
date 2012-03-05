@@ -37,9 +37,7 @@ module DiceFarmer
     end
 
     def discard_dead_dice
-      @dice.each do |die|
-        @dice.delete(die) if die.dead?
-      end
+      @dice.reject!{|die| die.dead?}
     end
 
     def make_new_die(dice)
