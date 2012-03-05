@@ -74,13 +74,13 @@ describe 'Player' do
       @player.dice.map(&:sides).include?(6).should be_true
     end
 
-    it "discards dice used to make the new die" do
+    it "keeps dice used to make the new die" do
       @player = DiceFarmer::Player.new("Joe", [4, 4, 4])
       @player.dice.each do |die|
         die.current_roll = 3
       end
       @player.make_new_die([@player.dice[0], @player.dice[1]])
-      @player.dice.map(&:sides).sort.should == [4, 6]
+      @player.dice.map(&:sides).sort.should == [4, 4, 4, 6]
     end
         
     it "rejects totals other than standard die sizes" do

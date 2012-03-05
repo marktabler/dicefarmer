@@ -44,9 +44,9 @@ module DiceFarmer
 
     def make_new_die(dice)
       total = dice.map(&:current_roll).inject(:+)
-      if [2, 4, 6, 8, 10, 12, 20].include?(total)
+      if DiceFarmer::Die::DENOMINATIONS.include?(total)
         dice.each do |die|
-          @dice.delete(die)
+          die.current_roll = 0
         end
         add_die(total)
         "I made you a new die with #{total} sides."

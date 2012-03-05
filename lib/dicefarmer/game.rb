@@ -21,13 +21,15 @@ module DiceFarmer
     end
 
     def player_won?(player)
-      score_check = goal_dice
-      player.dice.map(&:sides).each do |die|
-        if score_check.include?(die)
-          score_check.delete(die)
-        end
+      has_won = true
+      DiceFarmer::Die::DENOMINATIONS.each do |denom|
+        if goal_dice.include?(denom)
+          goal_dice_size = goal_dice.select{|d| d == denom}.size
+          player_dice_size = player.dice.map(&:sides).select{|d| d == denom}.size
+          has_won = false if player_dice_size < goal_dice_size
+        end            
       end
-      score_check.empty?
+      has_won
     end
 
     def play
@@ -35,7 +37,7 @@ module DiceFarmer
         @current_player ||= 0
         manage_turn(@players[@current_player])
         @current_player += 1
-        current_player = 0 if current_player > @players.size
+        @current_player = 0 if @current_player >= @players.size
       end
     end
     
@@ -50,8 +52,8 @@ module DiceFarmer
     end
 
     def display_roll_results(player)
-      @player.dice.sort_by {|d| d.sides}.each_with_index do |die, index|
-        puts "#{index + 1}: D#{die.sides} : #{die.current_roll}"
+      player.dice.sort_by {|d| d.sides}.each_with_index do |die, index|
+        puts "#{index + 1}: D#{die.sides} : #{die.current_roll}" unless die.current_roll == 0
       end
     end
     
@@ -60,7 +62,7 @@ module DiceFarmer
       puts "Which dice would you like to combine?"
       die_selections = gets.chomp
       if die_selections.size >= 1
-        parse_decision(die_selections, player)
+        parse_decisions(die_selections, player)
         accept_die_decisions(player)
       end
     end
@@ -75,12 +77,12 @@ module DiceFarmer
         indexes.each do |index|
           selections << player.dice.sort_by {|d| d.sides}[index - 1]
         end
-        player.make_new_dice(selections)
+        puts player.make_new_die(selections)
       end
     end
     
     def win_game(player)
-      "#{player.name} has won the game!"
+      puts "Game over! #{player.name} has won the game!"
       @game_over = true
     end
     

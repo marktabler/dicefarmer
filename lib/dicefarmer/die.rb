@@ -1,6 +1,7 @@
 module DiceFarmer
 
   class Die
+    DENOMINATIONS = [4, 6, 8, 10, 12, 20]
     attr_accessor :sides, :current_roll
 
     def initialize(sides)
