@@ -9,6 +9,10 @@ module DiceFarmer
       add_dice(start_dice)
     end
 
+    def ai?
+      false
+    end
+
     def add_dice(dice_values)
       dice_values.each do |value|
         add_die(value)

@@ -90,15 +90,24 @@ module DiceFarmer
     end
     
     def accept_die_decisions(player)
-      display_roll_results(player)
-      puts "Make a new die from which results? (Enter to end turn)"
-      die_selections = gets.chomp
+      if player.ai?
+        die_selections = player.ai_play_hand
+      else
+        die_selections = get_human_decisions(player)
+      end
+      
       if die_selections.size >= 1
         parse_decisions(die_selections, player)
         accept_die_decisions(player)
       end
     end
     
+    def get_human_decisons(player)
+      display_roll_results(player)
+      puts "Make a new die from which results? (Enter to end turn)"
+      return gets.chomp
+    end
+
     # Takes input in the form "1,2,4" or "1, 2, 4", and matches
     # the selections up to die indexes
     def parse_decisions(die_selections, player)
